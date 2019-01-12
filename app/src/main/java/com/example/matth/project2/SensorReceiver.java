@@ -6,6 +6,10 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
+/**
+ * Class that handles communication with the sensors
+ * @author Matthias Falk
+ */
 public class SensorReceiver {
     private SensorManager sensorManager;
     private Sensor temperatureSensor;
@@ -14,19 +18,38 @@ public class SensorReceiver {
     private SensorActivity sensorActivity;
     private CompareActivity compareActivity;
 
+    /**
+     * Constructor used by SensorActivity
+     * @param sensorActivity - instance of SensorActivity
+     */
     public SensorReceiver(SensorActivity sensorActivity){
         this.sensorActivity = sensorActivity;
         setSensors();
     }
+
+    /**
+     * Constructor used by CompareActivity
+     * @param context - instance of CompareActivity
+     */
     public SensorReceiver(CompareActivity context){
         this.compareActivity = context;
     }
+
+    /**
+     * Deregisters all of the Listeners being used
+     */
     public void deRegister() {
         sensorManager = null;
         temperatureSensor = null;
         humiditySensor = null;
         pressureSensor = null;
     }
+
+    /**
+     * Sets the texts in SensorActivity and CompareActivity
+     * @param type
+     * @param text
+     */
     public void setText(String type, String text){
         if (sensorActivity != null){
             if (type.equals("Temp")){
@@ -51,6 +74,10 @@ public class SensorReceiver {
             }
         }
     }
+
+    /**
+     * Checks if the user has the sensors and sets them up. If the user is missing an sensor it displays an message
+     */
     public void setSensors(){
         if (compareActivity != null) {
             sensorManager = (SensorManager) compareActivity.getSystemService(Context.SENSOR_SERVICE);
@@ -80,6 +107,10 @@ public class SensorReceiver {
             setText("Humidity", String.valueOf(R.string.not_available));
         }
     }
+
+    /**
+     * Inner class that uses the SensorEventListener interface to get the values from the sensor
+     */
     private class SensorListener implements SensorEventListener {
         @Override
         public void onSensorChanged(SensorEvent event) {

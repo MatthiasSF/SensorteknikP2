@@ -10,6 +10,10 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Calendar;
 
+/**
+ * Controller class for the project
+ * @author Matthias Falk
+ */
 public class Controller {
     private static final String API_PICKER_FRAGMENT = "ApiPickerFragment";
     private static final String API_VALUES_FRAGMENT = "ApiValuesFragment";
@@ -21,20 +25,37 @@ public class Controller {
     private AltitudeActivity altitudeActivity;
     private String[] values;
 
+    /**
+     * Constructor used by the ApiPickerActivity
+     * @param apiPickerActivity - instance of apiPickerActivity
+     */
     public Controller (ApiPickerActivity apiPickerActivity){
         this.apiPickerActivity = apiPickerActivity;
         weatherReceiver = new ADIReceiver(this);
         initializeApiPickerFragment();
         initializeApiValuesFragment();
     }
+    /**
+     * Constructor used by the CompareActivity
+     * @param compareActivity - instance of CompareActivity
+     */
     public Controller(CompareActivity compareActivity){
         this.compareActivity = compareActivity;
         weatherReceiver = new ADIReceiver(this);
     }
+
+    /**
+     * Constructor used by the AltitudeActivity
+     * @param altitudeActivity - instance of AltitudeActivity
+     */
     public Controller(AltitudeActivity altitudeActivity){
         this.altitudeActivity = altitudeActivity;
         weatherReceiver = new ADIReceiver(this);
     }
+
+    /**
+     * initializes the ApiPickerFragment
+     */
     private void initializeApiPickerFragment(){
         apiPickerFragment = (ApiPickerFragment) apiPickerActivity.getSupportFragmentManager().findFragmentByTag(API_PICKER_FRAGMENT);
         if (apiPickerFragment == null){
@@ -43,12 +64,21 @@ public class Controller {
         apiPickerFragment.setController(this);
         apiPickerActivity.setFragment(apiPickerFragment, false, API_PICKER_FRAGMENT);
     }
+
+    /**
+     * initializes the ApiValuesFragment
+     */
     private void initializeApiValuesFragment(){
         apiValuesFragment = (ApiValuesFragment) apiPickerActivity.getSupportFragmentManager().findFragmentByTag(API_VALUES_FRAGMENT);
         if (apiValuesFragment == null){
             apiValuesFragment = new ApiValuesFragment();
         }
     }
+
+    /**
+     * Starts up the reciever for the api
+     * @param type - the type of method used to connect to the api
+     */
     public void connectToWeatherReceiver(String type){
         if (type.equals("Async")) {
             weatherReceiver.startAsync("Malmö");
@@ -57,6 +87,12 @@ public class Controller {
             weatherReceiver.startVolley("Malmö", apiPickerActivity);
         }
     }
+
+    /**
+     * Method used to read an JSONObject
+     * @param data - json object
+     * @param type - AsyncTask or Volley
+     */
     public void jsonReader(JSONObject data, String type){
         try {
             JSONObject main = data.getJSONObject("main");
@@ -88,6 +124,12 @@ public class Controller {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Converts from kelvin to celsius
+     * @param temp the temperature in kelvin
+     * @return the temperature in celcius
+     */
     public String celsiusConverter(String temp){
         double k = Double.parseDouble(temp);
         double c = k - 273.15;

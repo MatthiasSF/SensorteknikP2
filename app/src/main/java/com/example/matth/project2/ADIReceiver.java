@@ -15,23 +15,57 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+/**
+ * Class used to communicate with openweatherapi using the methods AsyncTask and volley
+ * @author Matthias Falk
+ */
 public class ADIReceiver {
     private JSONObject data = new JSONObject();
     private Controller controller;
 
+    /**
+     * Constructor that recieves an instance of the controller
+     * @param controller - the active instance of controller
+     */
     public ADIReceiver(Controller controller) {
         this.controller = controller;
     }
+
+    /**
+     * Starts up the AsyncTask reciever
+     * @param town - the town of which we will recieve weather information about
+     */
     public void startAsync(String town) {
         new GetViaAsync(town);
     }
+
+    /**
+     * Starts up the volley reciever
+     * @param town - the town of which we will recieve weather information about
+     * @param context - the active context
+     */
     public void startVolley(String town, Context context){
         new GetViaVolley(town, context);
     }
+
+    /**
+     * Inner class that uses AsyncTask to recieve weather information
+     * @author Matthias Falk
+     */
     private class GetViaAsync {
+
+        /**
+         * Constructor that recieves an String of the town we want information about and starts the method getJSON()
+         * @param town - the town of which we will recieve weather information about
+         */
         private GetViaAsync(String town) {
             getJSON(town);
         }
+
+        /**
+         * gets an JSON from openweathermap.org
+         * @param city - the city of which we will recieve weather information about
+         */
         @SuppressLint("StaticFieldLeak")
         public void getJSON(final String city) {
             new AsyncTask<Void, Void, Void>() {
@@ -71,10 +105,28 @@ public class ADIReceiver {
             }.execute();
         }
     }
+
+    /**
+     *Inner class that uses Volley to recieve weather information
+     *@author Matthias Falk
+     *
+     */
     private class GetViaVolley {
+
+        /**
+         * Constructor that recieves an String of the town we want information about and starts the method getJSON()
+         * @param town - the town of which we will recieve weather information about
+         * @param context - the active context
+         */
         private GetViaVolley(String town, Context context) {
             getJSON(town, context);
         }
+
+        /**
+         * Gets an JSON from openweathermap.org
+         * @param city - the city of which we will recieve weather information about
+         * @param context - the active context
+         */
         public void getJSON(final String city, final Context context) {
             RequestQueue queue = Volley.newRequestQueue(context);
             String url = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&APPID=21a384f58d255ec46273ff67f04c8660";

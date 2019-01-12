@@ -7,6 +7,10 @@ import android.widget.Toast;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
+/**
+ * Activity that displays and comparison between the information recieved from the sensor and the API
+ * @author Matthias Falk
+ */
 public class CompareActivity extends AppCompatActivity {
     private TextView tempApi;
     private TextView tempSensor;
@@ -23,12 +27,21 @@ public class CompareActivity extends AppCompatActivity {
     private SensorReceiver sensorReceiver;
     private Controller controller;
 
+    /**
+     * Basic onCreate method
+     * Calls initialize()
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compare);
         initialize();
     }
+
+    /**
+     * Initializes all of the components used by the activity
+     */
     private void initialize(){
         tempApi = findViewById(R.id.compare_apiValueTemp);
         tempSensor = findViewById(R.id.compare_sensorValueTemp);
@@ -44,6 +57,11 @@ public class CompareActivity extends AppCompatActivity {
         controller = new Controller(this);
         controller.connectToWeatherReceiver("Async");
     }
+
+    /**
+     * Sets up all of the textviews
+     * @param values - array that contains all of the different values from the api
+     */
     public void setText(String[] values){
         tempApiText = values[0];
         humApiText = values[2];
@@ -55,18 +73,37 @@ public class CompareActivity extends AppCompatActivity {
         setHumDifference();
         setPresDifference();
     }
+
+    /**
+     * sets the text that contains the temparature from the sensor
+     * @param text - the text from the sensor
+     */
     public void setTempSensor(String text){
         tempSensor.setText("From sensor: " + text + " c");
         setTempDifference();
     }
+
+    /**
+     * sets the text that contains the humidity from the sensor
+     * @param text - the text from the sensor
+     */
     public void setHumSensor(String text){
         humSensor.setText("From sensor: " + text + " %");
         setHumDifference();
     }
+
+    /**
+     * sets the text that contains the pressure from the sensor
+     * @param text - the text from the sensor
+     */
     public void setPresSensor(String text){
         presSensor.setText("From sensor: " + text + " hPa");
         setPresDifference();
     }
+
+    /**
+     * Calculates the difference of the temperature readings
+     */
     public void setTempDifference(){
         if (!tempSensor.getText().equals(R.string.not_available) && tempApi.getText().length()> 0){
             String sensorText = (String) tempSensor.getText();
@@ -92,6 +129,10 @@ public class CompareActivity extends AppCompatActivity {
         }
         tempDifference.append(" c");
     }
+
+    /**
+     * Calculates the difference of the humidity readings
+     */
     public void setHumDifference(){
         if (!humSensor.getText().equals(R.string.not_available ) && humApi.getText().length()> 0){
             String sensorText = (String) humSensor.getText();
@@ -117,6 +158,10 @@ public class CompareActivity extends AppCompatActivity {
         }
         humDifference.append(" %");
     }
+
+    /**
+     * Calculates the difference of the pressure readings
+     */
     public void setPresDifference(){
         if (!presSensor.getText().equals(R.string.not_available) && presApi.getText().length()> 0){
             String sensorText = (String) presSensor.getText();
@@ -142,12 +187,20 @@ public class CompareActivity extends AppCompatActivity {
         }
         presDifference.append(" hPa");
     }
+
+    /**
+     * onResume method
+     */
     @Override
     protected void onResume() {
         super.onResume();
         sensorReceiver = new SensorReceiver(this);
         Toast.makeText(this, "Listener registered", Toast.LENGTH_LONG).show();
     }
+
+    /**
+     * onDestroy method
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
